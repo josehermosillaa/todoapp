@@ -7,12 +7,14 @@ const Filters = {
     Pending: 'Pending',
 }
 const state = {
-    todo: [
+    todos: [
         new Todo('Piedra del alma'),
         new Todo('Piedra del infinito'),
         new Todo('Piedra del tiempo'),
+        new Todo('Piedra de la realidad'),
+        new Todo('Piedra de la realidad'),
     ],
-    fiter: Filters.All,
+    filter: Filters.All,
 }
 
 const initStore = () => {
@@ -24,46 +26,71 @@ const loadStore = () => {
     throw new Error('Not implemented');
 }
 
+const getTodos = (filter = Filters.All) => {
+    switch (filter) {
+        case Filters.All:
+            return [...state.todos];
+        //filter reresa un nuevo arreglo
+        case Filters.Completed:
+            return state.todos.filter(todo => todo.done)
+        case Filters.Pending:
+            return state.todos.filter(todo => !todo.done)
+        default:
+            throw new Error(`Option ${filter} is not valid `)
+    }
+}
 /**
  * 
  * @param {String} description 
  */
 const addTodo = (description) => {
-    throw new Error('Not implemented');
-
+    if (!description) throw new Error('Description is required');
+    state.todos.push(new Todo(description));
 }
 /**
  * 
  * @param {String} todoId 
  */
 const toggleTodo = (todoId) => {
-    throw new Error('Not implemented');
+    state.todos = state.todos.map(todo => {
+        if (todo.id === todoId) {
+            todo.done = !todo.done;
+        }
+        //si tengo 1000 todos tendria que  barrer todos los todos, debe haber una forma mas eficiente
+        return todo
+    })
 }
 
 const deleteTodo = (todoID) => {
-    throw new Error('Not implemented');
+    state.todos = state.todos.filter(todo => todo.id !== todoID);
 
 }
 const deleteCompleted = () => {
-    throw new Error('Not implemented');
+    state.todos = state.todos.filter(todo => todo.done);
+
 
 }
-
+/**
+ * 
+ * @param {Filters} newFilter 
+ */
 const setFilter = (newFilter = Filters.All) => {
-    throw new Error('Not implemented');
+    //validacion de que exista en las 3 opciones permitidas, si no no lo dejo cambiar de filtros, objects.keys.include
+    state.filter = newFilter;
 }
 
 const getCurrentFilter = () => {
-    throw new Error('Not implemented');
+    return state.filter;
 
 }
 export default {
+    addTodo,
     deleteCompleted,
     deleteTodo,
     getCurrentFilter,
+    getTodos,
     initStore,
     loadStore,
     setFilter,
     toggleTodo,
-
 }
